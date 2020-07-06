@@ -4,31 +4,25 @@ sudo: required
 services: docker
 
 before_install:
-  # install heroku cli
+  # install heroku  cli
   - wget -qO- https://toolbelt.heroku.com/install.sh | sh
-  # login to dockerhub & heroku registry
   - echo "$HEROKU_API_KEY" | docker login -u "$HEROKU_USERNAME" --password-stdin registry.heroku.com
-  - docker build -t app-dev -f Dockerfile.dev .
+  # build dev image
+  - docker build -t alireza-chassebi/app-dev -f Dockerfile.dev .
 
 script:
-  - docker run -e CI=true app-dev npm run test
+  # run test on dev container
+  - docker run -e CI=true alireza-chassebi/app-dev npm run test
   # create prod image
-
-before_deploy: 
-  - docker build -t app-prod .
+  - docker build -t alireza-chassebi/app-prod .
   # tag image in the heroku registry repo
-  - docker tag app-prod registry.heroku.com/$HEROKU_APP/web
+  - docker tag alireza-chassebi/app-prod registry.heroku.com/$HEROKU_APP/web
 
 deploy:
   provider: script
   script:
     # push to heroku registry
-    docker push registry.heroku.com/$HEROKU_APP/web;
-    heroku container:release web --app $HEROKU_APP
-    on:
-      branch: master
-
-# enviornment variables
-# HEROKU_API_KEY api key for your heroku account can be found in your profile settings
-# HEROKU_USERNAME your heroku  username
-# HEROKU_APP the name of the heroku  app you created
+    - docker push registry.heroku.com/$HEROKU_APP/web;
+    - heroku container:release web --app $HEROKU_APP
+  on:
+    branch: master
