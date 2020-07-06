@@ -8,15 +8,17 @@ before_install:
   - wget -qO- https://toolbelt.heroku.com/install.sh | sh
   - echo "$HEROKU_API_KEY" | docker login -u "$HEROKU_USERNAME" --password-stdin registry.heroku.com
   # build dev image
-  - docker build -t alireza-chassebi/app-dev -f Dockerfile.dev .
+  - docker build -t app-dev -f Dockerfile.dev .
+
+before_script:
+  # run test on dev container
+  - docker run -e CI=true app-dev npm run test
 
 script:
-  # run test on dev container
-  - docker run -e CI=true alireza-chassebi/app-dev npm run test
   # create prod image
-  - docker build -t alireza-chassebi/app-prod .
+  - docker build -t app-prod .
   # tag image in the heroku registry repo
-  - docker tag alireza-chassebi/app-prod registry.heroku.com/$HEROKU_APP/web
+  - docker tag app-prod registry.heroku.com/$HEROKU_APP/web
 
 deploy:
   provider: script
