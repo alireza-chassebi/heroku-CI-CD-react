@@ -1,68 +1,54 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Heroku CI/CD workflow for React app using Docker & Travis CI
 
-## Available Scripts
+## Workflow
 
-In the project directory, you can run:
+When pushing changes to github Travis CI will run the npm run test script defined in package.json. If <br />
+all the tests pass the build will be deployed to heroku. If the tests fail members of the repo wil be <br />
+aware that the last commit was unsafe.
 
-### `npm start`
+## Setup
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Heroku
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+Create a heroku account and application. Set the applications deployment method to github and connect <br />
+the app to your repo containing your app.
 
-### `npm test`
+### Travis
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Create a Travis CI account. Navigate to your profile settings and click Activate under Github Apps integration. <br />
+Once on github selected the repo containing your app in order to integrate it with Travis CI. Navigate to your <br />
+Travis CI dashboard click on the repo you just integrated and select settings, set the enviorment variables <br />
+that are described in .travis.yml in this repo.
 
-### `npm run build`
+## Docker files
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+There are two dockerfiles one for development (Dockerfile.dev) and one for production (Dockerfile). <br />
+There is also a docker-compose.yml file that can be used to streamline container creation and running through the CLI.
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+## Docker commands
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+navigate to the root directory of the app.
 
-### `npm run eject`
+build development app image and create and run container with volumes.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```
+  docker-compose up
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+rebuild development app image and create and run container with volumes.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```
+  docker-compose up --build
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+build production ready app docker image. Replace IMAGENAME as desired
 
-## Learn More
+```
+  docker build -t IMAGENAME .
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+create and run production ready docker container. Replace PORTNUMBER & HOSTPORT as desired.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+```
+  docker run -e PORT=PORTNUMBER -p HOSTPORT:PORTNUMBER IMAGENAME
+```
