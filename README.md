@@ -2,23 +2,22 @@
 
 ## Workflow
 
-When pushing changes to github Travis CI will run the npm run test script defined in package.json. If <br />
+When pushing changes to github Travis CI will run the npm run test script defined in package.json on the development container. If <br />
 all the tests pass the build will be deployed to heroku. If the tests fail members of the repo wil be <br />
-aware that the last commit was unsafe.
+aware that the last commit was unsafe through github and Travis CI.
 
 ## Setup
 
 ### Heroku
 
-Create a heroku account and application. Set the applications deployment method to github and connect <br />
-the app to your repo containing your app.
+Create a heroku account and application. Set the applications deployment method to github.
 
 ### Travis
 
 Create a Travis CI account. Navigate to your profile settings and click Activate under Github Apps integration. <br />
 Once on github selected the repo containing your app in order to integrate it with Travis CI. Navigate to your <br />
 Travis CI dashboard click on the repo you just integrated and select settings, set the enviorment variables <br />
-that are described in .travis.yml in this repo.
+that are described in .travis.yml that is in this repo.
 
 ## Docker files
 
@@ -29,7 +28,7 @@ There is also a docker-compose.yml file that can be used to streamline container
 
 navigate to the root directory of the app.
 
-build development app image and create and run container with volumes.
+build the development app image and create and run a container with volumes.
 
 ```
   docker-compose up

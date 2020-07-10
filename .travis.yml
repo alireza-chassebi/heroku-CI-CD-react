@@ -17,7 +17,7 @@ before_script:
 script:
   # create prod image
   - docker build -t app-prod .
-  # tag image in the heroku registry repo
+  # replace image tag with tag corresponding to the repository in registry.heroku.com
   - docker tag app-prod registry.heroku.com/$HEROKU_APP/web
 
 deploy:
